@@ -1,0 +1,196 @@
+Feature: Búsqueda de Candidatos en la Interfaz de Usuario (UI)
+
+  Background:
+    Given Estoy en la pagina candidato "http://localhost:4200/candidatos"
+  
+  @nombre_completo
+  Scenario Outline: Búsqueda por Nombre Completo
+    When Ingreso "<nombre_completo>" en el campo de búsqueda de candidatos
+    And  Hago clic en el botón de búsqueda
+    Then La interfaz muestra los datos correctos del candidato "<nombre_completo>"
+
+    Examples:
+      | nombre_completo                     |
+      | Pérez Juan                          |
+      | Gómez López María José              |
+      | Rodríguez Méndez Carlos Andrés      |
+      | Martínez Romero Laura Valentina     |
+      | Fernández Silva Andrés Felipe       |
+      | Torres García Sofía Alejandra       |
+      | Morales Castro Diego Fernando       |
+      | Sánchez Ortega Camila Andrea        |
+      | Gutiérrez Naranjo Sebastián Javier  |
+      | Ramírez Martínez Paula Daniela      |
+      | Castillo Mendoza Felipe Alexander   |
+      | Gómez Rodríguez Laura Sofía         |
+      | Pérez López Carlos Andrés           |
+      | Martínez Díaz Ana María             |
+      | Sánchez Ruiz Diego Fernando         |
+      | López Torres Valentina Isabel       |
+      | Ramírez Castro Juan David            |
+      | Hernández Jiménez Sofía Catalina     |
+      | González Morales Sebastián Alejandro |
+      | Gutiérrez Vargas María Camila        |
+      | Rodríguez Pérez Luis Enrique         |
+
+
+  @nombre_parcial
+  Scenario Outline: Búsqueda parcial por nombre parcial
+    Given Existen candidatos registrados con nombres que contienen "<carlos>"
+    When  Ingreso "<nombre_parcial>" en el campo de búsqueda de candidatos
+    And   Hago clic en el botón de búsqueda
+    Then  La interfaz muestra una lista de candidatos cuyos nombres contienen "<carlos>"
+    
+    Examples:
+      | nombre_parcial |
+      | Juan           |
+      | Carlos         |
+      | María          |
+      | Andrés         |
+      | Valentina      |
+      | Sebastián      |
+      | Sofía          |
+      | Camila         |
+      | Felipe         |
+      | Alejandro      |
+
+      
+    @id_busqueda
+    Scenario Outline: Búsqueda de candidato por ID
+    Given Existe un candidato registrado con ID: <id_candidato> en la base de datos
+    When Ingreso <id_busqueda> en el campo de búsqueda por ID
+    And Hago clic en el botón de búsqueda
+    Then La interfaz muestra los datos del candidato con ID <id_candidato>
+    
+
+    Examples:
+      | id_candidato | 
+      | 1            |         
+      | 2            |         
+      | 3            |        
+      | 4            |         
+      | 5            |          
+      | 6            |          
+      | 7            |         
+      | 8            |           
+      | 9            | 
+      | 10           |
+
+
+  @id_busqueda_inexistente
+  Scenario Outline: Mostrar error al buscar un ID inexistente
+    Given No existe un candidato registrado con ID: <id_inexistente> en la base de datos
+    When Ingreso <id_busqueda> en el campo de búsqueda por ID
+    And Hago clic en el botón de búsqueda
+    Then La interfaz muestra un mensaje de error indicando "No se encontraron resultados"
+  
+    Examples:
+      | id_inexistente 
+      | 99999          | 
+      | 12345          | 
+      | 67890          | 
+      | 11223          | 
+      | 44556          | 
+     
+
+      @registro_exitoso
+  Scenario Outline: Registrar un nuevo candidato con datos válidos
+    Given No existe un candidato registrado con cédula: <cedula> en la base de datos
+    When Completo el formulario de registro con los siguientes datos:
+          | Nombre      | Apellido   | Cédula      | Fecha de Nacimiento | Fecha de Registro | Teléfono   | Ciudad   | Email        |
+          | <name>     | <lastName> | <card>      | <birthdate>         | <registrationDate> | <phone>    | <city>   | <email>      |
+   
+          And Hago clic en el botón "Crear"
+    Then La interfaz muestra un mensaje confirmando que el candidato fue creado exitosamente
+    And El nuevo candidato aparece en la lista de candidatos
+    
+    
+
+    Examples:
+
+    [
+    {
+    "name": "Maria Juliana",
+    "lastName": "Conde Niz",
+    "card": 10586854575,
+    "birthdate": "2004-10-29",
+    "registrationDate": "2025-03-20",
+    "phone": 31385469875,
+    "city": "Bogotá",
+    "email": "maria.conde@example.com"
+    },
+
+  Scenario Outline: Registro de un candidato con datos incompletos
+    Given La aplicación está operativa y el usuario está en la pantalla de registro de candidatos
+    When Completo el formulario de registro con los siguientes datos incompletos:
+      | Nombre     | Apellido   | Cédula     | Fecha de Nacimiento | Fecha de Registro | Teléfono   | Ciudad   | Email    |
+      | <name>     | <lastName> | <card>     | <birthdate>         | <registrationDate> | <phone>    | <city>   | <email>  |
+    And Hago clic en el botón "Crear"
+    Then La interfaz muestra un mensaje de error indicando los campos obligatorios que faltan por completar
+    And El candidato no se crea
+  
+    @registro_incompleto
+
+    Examples:
+
+    [
+    {
+    "name": "Maria Juliana",
+    "lastName": "Conde Niz",
+    "birthdate": "2004-10-29",
+    "registrationDate": "2025-03-20",
+    "phone": 31385469875,
+    "city": "Bogotá",
+    },
+
+  Scenario Outline: Intento de registro de un candidato duplicado
+    Given Existe un candidato registrado con cédula: <cedula> en la base de datos
+    When Completo el formulario de registro con los siguientes datos de un candidato duplicado:
+      | Nombre     | Apellido   | Cédula     | Fecha de Nacimiento | Fecha de Registro | Teléfono   | Ciudad   | Email                      |
+      | <name>     | <lastName> | <cedula>   | <birthdate>         | <registrationDate> | <phone>    | <city>   | <email>                    |
+    And Hago clic en el botón "Crear"
+    Then La interfaz muestra un mensaje de error indicando "Ya existe un candidato registrado con esta cédula"
+  
+    @registro_duplicado
+
+    Examples:
+
+    {
+    "name": "María José",
+    "lastName": "Gómez López",
+    "card": 87654321,
+    "birthdate": "1998-05-12",
+    "registrationDate": "2025-03-20",
+    "phone": 3124567890,
+    "city": "Medellín",
+    "email": "maria.jose.gomez.lopez@example.com"
+    },
+
+  Scenario Outline: Actualización de datos de un candidato
+    Given Existe un candidato con ID: <11>
+    When Busco al candidato por ID
+    And Modifico los datos con:
+      | Nombre     | Apellido   | Fecha de Nacimiento | Teléfono   | Ciudad   | Email                      |
+      | <name>     | <lastName> | <birthdate>         | <phone>    | <city>   | <email>                    |
+    And Guardo los cambios
+    Then La interfaz muestra los datos actualizados correctamente
+  
+    @actualizacion_candidato
+  
+    Examples:
+
+
+    {
+        "id": 11,
+        "name": "Felipe Alexander",
+        "lastName": "Castillo Mendoza",
+        "card": 1234567,
+        "birthdate": "2005-01-17",
+        "registrationDate": "2025-03-20",
+        "phone": 319584623, actualizado
+        "city": "Villavicencio",
+        "email": "felipe.castillo@example.com" actualizado
+        },
+        
+    
+    
