@@ -1,20 +1,22 @@
 package org.egg.auto;
 
 import org.junit.runner.RunWith;
-import com.cucumber.listener.Reporter;
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-    features="classpath:/features", // Carpeta de archivos .feature
-    tags = "@candidatePost or @candidatePut or @candidateGet or @candidateDelete", // Tags a tener en cuenta
-    glue = "org.egg.tests", // Paquete con definiciones de los pasos de los Tests: Given | When | Then | And | But
-    plugin = { "com.cucumber.listener.ExtentCucumberFormatter:target/cucumber-reports/report.html"},
+    features = "classpath:/features",
+    tags = "@candidatePost or @candidatePut or @candidateGet or @candidateDelete",
+    glue = "org.egg.tests",
+    plugin = {
+        "pretty",
+        "html:target/cucumber-reports/html-report.html",
+        "json:target/cucumber-reports/Cucumber.json",
+        "timeline:target/test-output-thread/",
+        "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"
+    }
 )
 public class RunAutomation {
-    // Clase vacía usada por Cucumber como punto de entrada
-}
-public static void writeExtentReport() {
-    Reporter.loadXMLConfig(new File("config/report.xml"));
+    // Clase vacía, solo se utiliza para ejecutar las pruebas de Cucumber
 }

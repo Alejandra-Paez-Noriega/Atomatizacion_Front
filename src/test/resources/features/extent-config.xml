@@ -1,0 +1,15 @@
+<extentreports>
+  <configuration>
+    <encoding>utf-8</encoding>
+    <theme>standard</theme> <!-- Opciones: standard | dark -->
+    <protocol>https</protocol>
+    <documentTitle>Reporte de Automatización</documentTitle>
+    <reportName>Resultados de Test - API Candidate</reportName>
+    <timelineEnabled>true</timelineEnabled>
+
+    <systemInfo>
+      <info name="Autor" value="Equipo QA - Egg" />
+      <info name="Entorno" value="QA" />
+    </systemInfo>
+  </configuration>
+</extentreports>

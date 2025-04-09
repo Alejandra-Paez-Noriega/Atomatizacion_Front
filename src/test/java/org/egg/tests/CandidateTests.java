@@ -1,7 +1,9 @@
 package org.egg.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.egg.pages.CandidatePage;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -52,12 +54,15 @@ public class CandidateTests {
         page.clicBotonGuardar();
     }
 
-    @Then("Veo los datos correctos del candidato con nombre: {string} y apellido: {string}")
+    @Then("Encuentro los datos correctos del candidato con nombre: {string} y apellido: {string}")
     public void veo_los_datos_correctos_del_candidato(String nombre, String apellido) throws InterruptedException {
         page.recargarPagina();
         page.buscoCandidato(nombre, apellido);
-        assertEquals(nombre + " " + apellido, page.obtenerNombreCompleto(),
-                "El nombre completo del candidato no coincide.");
+        String nombreCompletoEsperado = nombre + " " + apellido;
+        String nombreEncontrado = page.obtenerNombreCompleto(nombreCompletoEsperado);
+
+        assertNotNull(nombreEncontrado, "No se encontró un candidato con el nombre completo exacto.");
+        assertEquals(nombreCompletoEsperado, nombreEncontrado, "El nombre completo del candidato no coincide.");
     }
 
     // GET
@@ -78,7 +83,7 @@ public class CandidateTests {
         page.ingresoEmail(nuevo_email);
     }
 
-    @Then("Veo los datos correctos del candidato con nombre: {string}, apellido: {string} y correo: {string}")
+    @Then("Encuentro los datos correctos del candidato con nombre: {string}, apellido: {string} y correo: {string}")
     public void veo_los_datos_correctos_del_candidato(String nombre, String apellido, String correo)
             throws InterruptedException {
         page.recargarPagina();
@@ -87,9 +92,10 @@ public class CandidateTests {
     }
 
     // DELETE
-    @And("Hago clic en el botón de eliminar candidato")
-    public void hago_clic_en_el_boton_de_eliminar_candidato() {
-        page.clicBotonEliminarCandidato();
+    @And("Hago clic en el botón de eliminar candidato con nombre: {string} y apellido: {string}")
+    public void hago_clic_en_el_boton_de_eliminar_candidato(String nombre, String apellido) {
+        String nombreCompleto = nombre + " " + apellido;
+        page.clicBotonEliminarCandidato(nombreCompleto);
     }
 
     @And("Confirmo la eliminación")
@@ -98,12 +104,13 @@ public class CandidateTests {
     }
 
     @Then("No encuentro al candidato con nombre: {string} y apellido: {string}")
-    public void no_encuentro_al_candidato_con_nombre_y_apellido(String nombre, String apellido) throws InterruptedException {
-    page.recargarPagina();
-    page.buscoCandidato(nombre, apellido);
-    assertNotEquals(nombre + " " + apellido, page.obtenerNombreCompleto(),
-                "El candidato aun exixte.");
-    
-}
-    
+    public void no_encuentro_al_candidato_con_nombre_y_apellido(String nombre, String apellido)
+            throws InterruptedException {
+        page.recargarPagina();
+        page.buscoCandidato(nombre, apellido);
+        String nombreCompletoEsperado = nombre + " " + apellido;
+        assertFalse(page.existeCandidato(nombreCompletoEsperado),
+                "El candidato aún existe: " + nombreCompletoEsperado);
     }
+
+}

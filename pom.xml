@@ -19,11 +19,10 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.vimalselvam</groupId>
-            <artifactId>cucumber-extentsreport</artifactId>
-            <version>3.1.1</version>
+            <groupId>tech.grasshopper</groupId>
+            <artifactId>extentreports-cucumber7-adapter</artifactId>
+            <version>1.14.0</version>
         </dependency>
-
 
         <dependency>
             <groupId>io.cucumber</groupId>
@@ -34,6 +33,12 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
+            <version>7.22.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-core</artifactId>
             <version>7.22.0</version>
         </dependency>
 
