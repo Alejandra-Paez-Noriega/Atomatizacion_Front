@@ -1,9 +1,7 @@
 package org.egg.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import org.egg.pages.CandidatePage;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -93,7 +91,7 @@ public class CandidateTests {
 
     // DELETE
     @And("Hago clic en el botón de eliminar candidato con nombre: {string} y apellido: {string}")
-    public void hago_clic_en_el_boton_de_eliminar_candidato(String nombre, String apellido) {
+    public void hago_clic_en_el_boton_de_eliminar_candidato(String nombre, String apellido) throws InterruptedException {
         String nombreCompleto = nombre + " " + apellido;
         page.clicBotonEliminarCandidato(nombreCompleto);
     }
@@ -102,15 +100,11 @@ public class CandidateTests {
     public void confirmo_la_eliminacion() {
         page.confirmarEliminacion();
     }
-
-    @Then("No encuentro al candidato con nombre: {string} y apellido: {string}")
-    public void no_encuentro_al_candidato_con_nombre_y_apellido(String nombre, String apellido)
-            throws InterruptedException {
+  
+    @Then("Busco el candidato con {string} y apellido: {string} y veo un mensaje: {string}")
+    public void busco_el_candidato_con_nombre_y_apellido_y_veo_un_mensaje(String nombre, String apellido, String mensaje) throws InterruptedException {
         page.recargarPagina();
         page.buscoCandidato(nombre, apellido);
-        String nombreCompletoEsperado = nombre + " " + apellido;
-        assertFalse(page.existeCandidato(nombreCompletoEsperado),
-                "El candidato aún existe: " + nombreCompletoEsperado);
-    }
-
+        assertEquals(mensaje, page.obtenerMensajeNoEncontrado(), "El mensaje no coincide con el esperado.");
+}
 }

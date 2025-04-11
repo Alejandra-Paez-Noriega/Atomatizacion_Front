@@ -12,8 +12,8 @@ Feature: CRUD de Candidatos en Interfaz de Usuario (UI)
 
     Examples:
       | nombre      | apellido       | cedula     | fecha_nacimiento | celular    | ciudad       | email                        | aspiracion_salarial | seniority   | skills                                      | fuente       | experiencia_trabajo                 | anios_experiencia | level | perfil         | origen  |
-      | Carlos      | Pérez Díaz     |  111222333 |       2003-12-31 | 3101112223 | Bogotá       | carlos.perez@example.com     |             1000000 | practicante | diseño UIUX                                 | Indeed       |                     recién egresado |                 0 |     1 | Dev Front      | Subk    |
-      | Carlos      | Pérez          |  123456789 |       2005-01-10 | 1234567890 | Cali         | carlos@example.com           |             2000000 | semi senior | análisis                                    | Computrabajo |                   5 años en soporte |                 5 |    10 | Ing. Datos     | Interno |
+      | Julian      | Niño Díaz      |  111222333 |       2003-12-31 | 3101112223 | Bogotá       | carlos.perez@example.com     |             1000000 | practicante | diseño UIUX                                 | Indeed       | recién egresado                     |                 0 |     1 | Dev Front      | Subk    |
+      | Sebastian   | Pérez          |  123456789 |       2005-01-10 | 1234567890 | Cali         | carlos@example.com           |             2000000 | semi senior | análisis                                    | Computrabajo |                   5 años en soporte |                 5 |    10 | Ing. Datos     | Interno |
       | Jose Miguel | Gonzalez Pinto | 1058796655 |       1999-10-15 | 3152268975 | Bogota       | Jose.pinto@example.com       |            10000000 | senior      | redes y seguridad de la información         | computrabajo |           7 años como líder técnico |                 7 |    11 | Líder Técnico  | Reclu   |
       | Ana María   | Rodríguez Díaz | 1234567890 |       1995-03-20 | 3001122334 | Medellín     | ana.rodriguez@example.com    |             5000000 | junior      | desarrollo web, HTML, CSS, JavaScript       | LinkedIn     | 2 años como desarrolladora frontend |                 2 |     5 | Dev Front      | Interno |
       | Alejandra   | Castro Soto    |  999888777 |       1975-01-01 | 3190001112 | Cartagena    | alejandra.castro@example.com |            50000000 | experto     | gestión de proyectos, liderazgo estratégico | Reclu        |   20 años como CEO de multinacional |                20 |    13 | Líder Técnico  | Reclu   |
@@ -35,14 +35,14 @@ Feature: CRUD de Candidatos en Interfaz de Usuario (UI)
       | nombre      | apellido       | nuevo_email                 |
       | Jose Miguel | Gonzalez Pinto | jose.pinto@accenture.com    |
       | Ana María   | Rodríguez Díaz | ana.rodriguez@accenture.com |
-      | Carlos      | Pérez Díaz     | cperez.diaz@accenture.com   |
-      | Carlos      | Pérez          | carlos.p@gmail              |
+      | Julian      | Niño Díaz      | cperez.diaz@accenture.com   |
+      | Sebastian   | Pérez          | carlos.p@gmail.com          |
       | Alejandra   | Castro Soto    | a.castro.soto@accenture.com |
-      | Daniel      | Rojas Mena     | drojas@hotmail              |
+      | Daniel      | Rojas Mena     | drojas@hotmail.com          |
       | Mónica      | Suárez León    | monica.leon@accenture.com   |
-      | Felipe      | Díaz Cruz      | f.diaz.cruz1999@yahoo       |
-      | Carolina    | Vargas Gil     | carolina.v@accenture        |
-      | Andrés      | Torres Mena    | andres.m@softwaredevcom     |
+      | Felipe      | Díaz Cruz      | f.diaz.cruz1999@yahoo.com   |
+      | Carolina    | Vargas Gil     | carolina.v@accenture.com    |
+      | Andrés      | Torres Mena    | andres.m@softwaredev.com    |
       | Ana María   | Rodríguez Díaz | ana.rodriguez@gmail.com     |
 
   @candidateGet
@@ -54,8 +54,8 @@ Feature: CRUD de Candidatos en Interfaz de Usuario (UI)
       | nombre      | apellido       |
       | Jose Miguel | Gonzalez Pinto |
       | Ana María   | Rodríguez Díaz |
-      | Carlos      | Pérez Díaz     |
-      | Carlos      | Pérez          |
+      | Julian      | Niño Díaz      |
+      | Sebastian   | Pérez          |
       | Alejandra   | Castro Soto    |
       | Daniel      | Rojas Mena     |
       | Mónica      | Suárez León    |
@@ -68,14 +68,14 @@ Feature: CRUD de Candidatos en Interfaz de Usuario (UI)
     When Ingreso nombre: "<nombre>" y apellido: "<apellido>" en el campo de búsqueda
     And Hago clic en el botón de eliminar candidato con nombre: "<nombre>" y apellido: "<apellido>"
     And Confirmo la eliminación
-    Then No encuentro al candidato con nombre: "<nombre>" y apellido: "<apellido>"
+    Then Busco el candidato con "<nombre>" y apellido: "<apellido>" y veo un mensaje: "No se encontraron candidatos"
 
     Examples:
       | nombre      | apellido       |
       | Jose Miguel | Gonzalez Pinto |
       | Ana María   | Rodríguez Díaz |
-      | Carlos      | Pérez Díaz     |
-      | Carlos      | Pérez          |
+      | Julian      | Niño Díaz      |
+      | Sebastian   | Pérez          |
       | Alejandra   | Castro Soto    |
       | Daniel      | Rojas Mena     |
       | Mónica      | Suárez León    |

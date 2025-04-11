@@ -20,17 +20,17 @@ public class CandidatePage extends InitPage {
     public static final String CAMPO_CELULAR = "#celular";
     public static final String CAMPO_CIUDAD = "#ciudad";
     public static final String CAMPO_EMAIL = "#correo";
-    public static final String CAMPO_ASIGNACION_SALARIAL = "#salaryAspiration";
+    public static final String CAMPO_ASIGNACION_SALARIAL = "[name=\"salaryAspiration\"]";
     public static final String CAMPO_SENIORITY = "#seniority";
     public static final String CAMPO_SKILLS = "#skills";
     public static final String CAMPO_FUENTE = "#source";
     public static final String CAMPO_EXPERIENCIA_TRABAJO = "#workExperience";
     public static final String CAMPO_AÑOS_EXPERIENCIA = "#yearsExperience";
-    public static final String CAMPO_LEVEL = "#level";
+    public static final String CAMPO_LEVEL = "[formcontrolname=\"level\"]";
     public static final String CAMPO_ORIGEN = "select[name=\"origin\"]";
     public static final String CAMPO_PERFIL = "select[name=\"jobProfile\"]";
     public static final String BOTON_GUARDAR = ".guardar-btn";
-  
+    public static final String MENSAJE_NO_CANDIDATOS = ".lista-candidatos h2";
 
     // Buscar Candidato
     public static final String CAMPO_BUSCAR_CANDIDATO = "input[placeholder=\"Buscar candidato\"]";
@@ -115,6 +115,9 @@ public class CandidatePage extends InitPage {
 
     @FindBy(xpath = BOTON_CONFIRMAR_ELIMINAR)
     WebElement botonConfirmarEliminarCandidato;
+
+    @FindBy(css = MENSAJE_NO_CANDIDATOS)
+    WebElement mensajeNoCandidatos;
 
     public CandidatePage(WebDriver driver) {
         super(driver);
@@ -215,10 +218,11 @@ public class CandidatePage extends InitPage {
 
     public void buscoCandidato(String nombre, String apellido) throws InterruptedException {
         campoBuscarCandidato.sendKeys(nombre + " " + apellido);
-        Thread.sleep(500);
+        Thread.sleep(500); // Esperar un poco para que el mensaje se cargue
     }
 
-    public String obtenerNombreCompleto(String nombreCompletoEsperado) {
+    public String obtenerNombreCompleto(String nombreCompletoEsperado) throws InterruptedException {
+        Thread.sleep(500); // Esperar un poco para que el mensaje se cargue
         for (WebElement elemento : campoNombreCreado) {
             String nombreEncontrado = elemento.getText().trim();
             if (nombreEncontrado.equalsIgnoreCase(nombreCompletoEsperado)) {
@@ -228,7 +232,8 @@ public class CandidatePage extends InitPage {
         return null;
     }
 
-    public String obtenerEmail() {
+    public String obtenerEmail() throws InterruptedException {
+        Thread.sleep(500); // Esperar un poco para que el mensaje se cargue
         String textoCompleto = campoEmailCreado.get(0).getText();
         return textoCompleto.replace("E-mail: ", "").trim();
     }
@@ -238,37 +243,49 @@ public class CandidatePage extends InitPage {
         botonConfirmarEliminarCandidato.click();
     }
 
-    public boolean existeCandidato(String nombreCompletoEsperado) {
-        // Esperamos hasta que al menos se actualicen las tarjetas del DOM (si hay alguna)
+    public boolean existeCandidato(String nombreCompletoEsperado) throws InterruptedException {
+        Thread.sleep(500); // Esperar un poco para que el mensaje se cargue
+        // Esperamos hasta que al menos se actualicen las tarjetas del DOM (si hay
+        // alguna)
         wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(TARJETA_CANDIDATO)));
-    
+
         // Filtramos directamente usando streams
         return driver.findElements(By.cssSelector(TARJETA_CANDIDATO)).stream()
-            .map(tarjeta -> tarjeta.findElement(By.cssSelector(CAMPO_NOMBRE_CREADO)).getText().trim())
-            .anyMatch(nombre -> nombre.equalsIgnoreCase(nombreCompletoEsperado));
+                .map(tarjeta -> tarjeta.findElement(By.cssSelector(CAMPO_NOMBRE_CREADO)).getText().trim())
+                .anyMatch(nombre -> nombre.equalsIgnoreCase(nombreCompletoEsperado));
     }
-    
-    public void clicBotonEliminarCandidato(String nombreCompletoEsperado) {
+
+    public void clicBotonEliminarCandidato(String nombreCompletoEsperado) throws InterruptedException {
+        Thread.sleep(500); // Esperar un poco para que el mensaje se cargue
         // Esperar a que haya al menos una tarjeta visible
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(TARJETA_CANDIDATO)));
-    
+
         // Obtener las tarjetas visibles después de aplicar el filtro
         List<WebElement> tarjetasCandidatos = driver.findElements(By.cssSelector(TARJETA_CANDIDATO));
-    
+
         for (WebElement tarjeta : tarjetasCandidatos) {
             WebElement nombreElemento = tarjeta.findElement(By.cssSelector(CAMPO_NOMBRE_CREADO));
             String nombreEncontrado = nombreElemento.getText().trim();
-    
+
             if (nombreEncontrado.equalsIgnoreCase(nombreCompletoEsperado)) {
                 WebElement botonEliminar = tarjeta.findElement(By.cssSelector(BOTON_ELIMINAR_CANDIDATO));
-    
+
                 // Esperar a que el botón sea clickeable
                 wait.until(ExpectedConditions.elementToBeClickable(botonEliminar));
-                
+
                 botonEliminar.click();
                 return;
             }
         }
         throw new NoSuchElementException("No se encontró un candidato con el nombre: " + nombreCompletoEsperado);
+    }
+
+    public String obtenerMensajeNoEncontrado() throws InterruptedException {
+        try {
+            Thread.sleep(1000); // Esperar un poco para que el mensaje se cargue
+            return mensajeNoCandidatos.getText();
+        } catch (NoSuchElementException e) {
+            return null; // O manejar el caso de que no se encuentre el elemento
+        }
     }
 }
